@@ -65,16 +65,20 @@ Go to `File` > `Experience Settings` > `Security` and enable `Allow HTTP Request
 ### 3. Configure the logging script
 
 Replace the `YOUR_DISCORD_WEBHOOK_URL` variable in `Logging.luau` with your actual Discord webhook URL.
+<br>
 ![Tutorial Step 3](assets/tut3.png)
 <br>
-<span style="color: yellow;">Your Webhook URL is server-sided, player non-owners cant see it, so dont worry</span>
+
+- Your Webhook URL is server-sided, player non-owners cant see it, so dont worry
 
 ### 4. Test the script
 
 Play your game in Roblox Studio and check your Discord channel for log messages whenever a player joins or leaves the game.
+<br>
 ![Tutorial Step 4](assets/tut4.png)
 <br>
-<span style="color: yellow;">In Roblox Studio Test, Server Region is selecting by your devices' IP, Job ID will not appears</span>
+
+- In Roblox Studio Test, Server Region is selecting by your devices' IP, Job ID will not appears
 
 ---
 
