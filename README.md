@@ -4,6 +4,8 @@
 
 A simple and efficient Roblox script that logs player joins and leaves to a Discord webhook.
 
+---
+
 ## Requirements
 
 - Roblox Studio (i guess u have)
@@ -82,6 +84,15 @@ Play your game in Roblox Studio and check your Discord channel for log messages 
 
 ---
 
+## Used Services
+
+- [Thumbnail API](https://create.roblox.com/docs/tr-tr/cloud/reference/domains/thumbnails) for getting player avatars
+- [Roproxy](https://devforum.roblox.com/t/roproxycom-a-free-rotating-proxy-for-roblox-apis/1508367) for bypassing Roblox API blocking
+- [IPinfo](https://ipinfo.io/) for getting server region
+- [Discord Webhooks](https://discord.com/developers/docs/resources/webhook) for sending log messages to Discord
+
+---
+
 ## Troubleshooting
 
 - Make sure you have enabled HTTP requests in your Roblox game settings.
@@ -93,6 +104,8 @@ Play your game in Roblox Studio and check your Discord channel for log messages 
   - 400 Bad Request: There is an issue with the payload being sent to the webhook. Check the output console for any error messages related to the payload formatting.
   - 500 Internal Server Error: There is an issue on Discord's end. This is usually temporary, so you may want to wait and try again later.
 - Servers-and-Clients mode is not suppported, in this mode players take fake negative IDs and causes unexpected behaviors
+
+---
 
 ## Develop Ideas
 
