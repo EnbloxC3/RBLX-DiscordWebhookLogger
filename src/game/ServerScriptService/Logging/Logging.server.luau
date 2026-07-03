@@ -1,4 +1,6 @@
--- Services
+---- Webhook Logger Script (Logging.server.luau | v1.1.0) ----
+
+-- Servicesx
 local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
@@ -14,7 +16,9 @@ local GID = game.GameId
 local green = 65280
 local red = 16711680
 local yellow = 16766720
-
+local gray = 9807270
+local greenFailThumb = "https://cdn.discordapp.com/embed/avatars/2.png"
+local yellowFailThumb = "https://cdn.discordapp.com/embed/avatars/3.png"
 
 -- Webhook URL
 local WEBHOOK_URL = ServerStorage:WaitForChild("dcWebhookUrl").Value
@@ -25,24 +29,35 @@ local RETRY_DELAY = 5.0
 local REQUEST_INTERVAL = 1.0
 local MAX_QUEUE = 200
 
+-- Flags
+local isClosing = false
+
 -- Queue
 local queue = {}
 local sessions = {}
 
 ---- WEBHOOK SENDER ----
 
+local function sendWebhook(job)
+	local success, response = pcall(function()
+		return HttpService:PostAsync(
+			WEBHOOK_URL,
+			HttpService:JSONEncode(job),
+			Enum.HttpContentType.ApplicationJson
+		)
+	end)
+	
+	return success, response
+end
+
 task.spawn(function()
 	while true do
+		if isClosing then break end
+		
 		if #queue > 0 then
 			local job = table.remove(queue, 1)
 
-			local success, response = pcall(function()
-				return HttpService:PostAsync(
-					WEBHOOK_URL,
-					HttpService:JSONEncode(job),
-					Enum.HttpContentType.ApplicationJson
-				)
-			end)
+			local success, response = sendWebhook(job)
 
 			if not success then
 				warn("Webhook failed: " .. tostring(response) .. "!")
@@ -260,6 +275,7 @@ local function serverStart()
 end
 
 -- Chat Event --
+
 local function onChat(player, message)
 	local fields = FieldBuilder.new()
 
@@ -275,7 +291,7 @@ local function onChat(player, message)
 		["embeds"] = {{
 			["title"] = "💬 Player Chat",
 			["color"] = yellow,
-			["thumbnail"] = {["url"] = sessions[player.UserId].thumbCache},
+			["thumbnail"] = {["url"] = sessions[player.UserId].thumbCache or yellowFailThumb},
 			["fields"] = fields:build(),
 		}}
 	}
@@ -285,11 +301,7 @@ end
 
 -- Join Event --
 
-Players.PlayerAdded:Connect(function(player)
-	if #Players:GetPlayers() == 1 then
-		serverStart()
-	end
-	
+local function onJoin(player)
 	local joinTime = os.time()
 
 	sessions[player.UserId] = {
@@ -318,23 +330,17 @@ Players.PlayerAdded:Connect(function(player)
 		["embeds"] = {{
 			["title"] = "🟢 Player Joined",
 			["color"] = green,
-			["thumbnail"] = {["url"] = sessions[player.UserId].thumbCache},
+			["thumbnail"] = {["url"] = sessions[player.UserId].thumbCache or greenFailThumb},
 			["fields"] = fields:build(),
 		}}
 	}
 
 	enqueue(embed)
-	
-	-- special: caller for onChat
-	player.Chatted:Connect(function(message)
-		onChat(player, message)
-	end)
-
-end)
+end
 
 -- Leave Event --
 
-Players.PlayerRemoving:Connect(function(player, exitReason)
+local function onLeave(player, exitReason)
 	local leaveTime = os.time()
 	local session = sessions[player.UserId]
 
@@ -374,7 +380,81 @@ Players.PlayerRemoving:Connect(function(player, exitReason)
 	enqueue(embed)
 
 	sessions[player.UserId] = nil
-end)
+end
+
+-- Server Close Event --
+
+local function serverClose()
+	local closeTime = os.time()
+	local session = sessions[GID]
+	
+	local duration = 0
+	if session then
+		duration = closeTime - session.createTime
+	end
+	
+	local fields = FieldBuilder.new()
+	
+	fields
+		:field("GameId", tostring(GID), false)
+		:field("Creation Time", formatDate(sessions[GID].createTime))
+		:field("Close Time", formatDate(closeTime))
+		
+		:field("Session Duration", formatDuration(duration), false)
+
+		:addAll(placeFields(sessions[GID]))
+		:blank()
+
+		:addAll(serverFields(sessions[GID]))
+	
+	local embed = {
+		["embeds"] = {{
+			["title"] = "⚪ Server Closed",
+			["color"] = gray,
+			["fields"] = fields:build(),
+		}}
+	}
+	
+	-- queue closing in this case
+	isClosing = true
+	while #queue > 0 do
+		local job = table.remove(queue, 1)
+		sendWebhook(job)
+	end
+	--enqueue(embed)
+	sendWebhook(embed)
+	
+	sessions[GID] = nil
+end
+
+---- CALLERS ----
+
+-- Bindings --
+
+local function playerAdded(player)
+	if #Players:GetPlayers() == 1 then
+		serverStart()
+	end
+	
+	onJoin(player)
+	
+	player.Chatted:Connect(function(message)
+		onChat(player, message)
+	end)
+end
+
+--
+
+local function playerRemoving(player)
+	onLeave(player)
+end
+
+-- Callbacks --
+
+Players.PlayerAdded:Connect(playerAdded)
+Players.PlayerRemoving:Connect(playerRemoving)
+game:BindToClose(serverClose)
 
 
----- END ----
+---- end of file ----
+-- https://github.com/EnbloxC3

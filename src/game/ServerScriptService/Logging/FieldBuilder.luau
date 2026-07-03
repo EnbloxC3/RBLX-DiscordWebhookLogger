@@ -26,7 +26,7 @@ function FieldBuilder:field(name, value, inline)
 end
 
 function FieldBuilder:blank(inline)
-	return self:field("\u{200B}", "\u{200B}", inline ~= false)
+	return self:field("", "", inline ~= false)
 end
 
 function FieldBuilder:build()
