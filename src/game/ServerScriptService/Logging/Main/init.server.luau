@@ -1,6 +1,6 @@
----- Webhook Logger Script (Logging.server.luau | v1.1.0) ----
+---- Webhook Logger Script v1.1.0 ----
 
--- Servicesx
+-- Services
 local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
@@ -457,4 +457,4 @@ game:BindToClose(serverClose)
 
 
 ---- end of file ----
--- https://github.com/EnbloxC3
+-- https://github.com/EnbloxC3/RBLX-DiscordWebhookLogger
