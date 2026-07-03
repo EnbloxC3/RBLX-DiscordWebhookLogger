@@ -9,7 +9,7 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local ServerStorage = game:GetService("ServerStorage")
 
 -- Modules
-local FieldBuilder = require(game.ServerScriptService.FieldBuilder)
+local FieldBuilder = require(script:WaitForChild("FieldBuilder"))
 
 -- Consts
 local GID = game.GameId

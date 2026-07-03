@@ -1,7 +1,7 @@
 {
   "name": "RBLX-DiscordWebhookLogger",
   "tree": {
-    "$className": "DataModel",
+    "$className": "Model",
 
     "ServerStorage": {
       "$path": "src/game/ServerStorage"
@@ -9,6 +9,10 @@
 
     "ServerScriptService": {
       "$path": "src/game/ServerScriptService"
+    },
+
+    "Installer": {
+      "$path": "src/game/Installer.luau"
     }
   }
 }
