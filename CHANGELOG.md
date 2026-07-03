@@ -1,6 +1,6 @@
 # v1.1.0
 
-_(minor)_ New features, optimizations, some compatiblities, new events for logging! Development time: ~1 day 19 hours
+_(minor)_ New features, optimizations, some compatiblities, new events for logging! Development time: ~1 day 19 hours 50 minutes
 
 ## Added
 
