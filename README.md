@@ -2,82 +2,117 @@
 
 # RBLX Discord Webhook Logger
 
-A simple and efficient Roblox script that logs player joins and leaves to a Discord webhook.
+![Version](https://img.shields.io/badge/version-1.1.0-blue?style=flat-square)
+![License](https://img.shields.io/github/license/EnbloxC3/RBLX-DiscordWebhookLogger?style=flat-square)
+<br>
+![Roblox](https://img.shields.io/badge/-Roblox-E2231A?style=flat-square&logo=roblox&logoColor=white)
+![Luau](https://img.shields.io/badge/-Luau-00A2FF?style=flat-square&logo=luau&logoColor=white)
+![Rojo](https://img.shields.io/badge/-Rojo-C80000?style=flat-square)
+
+Basic script that logs events via Discord webhooks for your Roblox Games!
 
 ---
 
 ## Requirements
 
-- Roblox Studio (i guess u have)
+- Roblox Studio
 - A Discord webhook URL
 - HTTP requests enabled in your Roblox game [learn how to enable HTTP requests](https://create.roblox.com/docs/tr-tr/cloud-services/http-service)
 - A Roblox game
 
 ---
 
-## Placement
+## Features
 
-```text
-Game/
-├── ...
-├── ServerScriptService/
-│   ├── Logging.luau <---
-│   ├── Region.luau <---
-│   ├── ...
-└── ...
-```
+### Logging
+
+- Player Join/Leave
+- Server Create
+- Chatting
+- Server Shutdown
+
+### Utilities
+
+- Installer script for model (.rbxm) file
+- Basic webhook URL configuration
+- Rojo compatible
+- Portable small script
 
 ---
 
-## Configuration
+## Installation
 
-In [Logging.luau](src/Game/ServerScriptService/Logging.luau):
+### 1. Create model/game file with Rojo
 
-```lua
-...
--- Webhook URL
-local WEBHOOK_URL = "YOUR_DISCORD_WEBHOOK_URL" -- replace with your actual webhook URL
+- Game
 
--- Config
-local RETRY_ON_FAILURE = false -- set to true to retry failed requests, otherwise failed requests will be dropped (i not recommended this cause of ratelimits and infinite loops)
-local RETRY_DELAY = 5.0 -- delay in seconds before retrying a failed request (only used if RETRY_ON_FAILURE is true)
-local REQUEST_INTERVAL = 1.0 -- minimum interval in seconds between requests to avoid hitting rate limits
-local MAX_QUEUE = 200 -- maximum number of messages to queue before dropping new messages
-...
+```bash
+rojo build default.project.json -o RBLX-DiscordWebhookLogger.rbxl
 ```
+
+- Model
+
+```bash
+rojo build model.project.json -o RBLX-DiscordWebhookLogger.rbxm
+```
+
+### 2. Download Release
+
+Download the latest release from [Releases](https://github.com/EnbloxC3/RBLX-DiscordWebhookLogger/releases)
+
+---
+
+## Placement
+
+### Model
+
+Drag and drop, copy and paste, "Insert from File..." or importing from Asset Manager, the `.rbxm` file into your Roblox game.
+After importing:
+
+#### Installer
+
+In edit mode, run `require(game.Workspace:FindFirstChild("RBLX-DiscordWebhookLogger").Installer).install()` in the command bar to install the logging script automatically
+
+#### Manual
+
+Move folders in the model to the correct locations in your game
+
+### Game (DataModel)
+
+Open the `.rbxl` file in Roblox Studio, then drag and drop or copy and paste the folders to your game
 
 ---
 
 ## Usage
 
-Just copy `src/Game/ServerScriptService/` content to your game's `ServerScriptService` and replace the `WEBHOOK_URL` variable with your actual Discord webhook URL. The script will automatically log player joins and leaves to the specified webhook. You can see log embeds in your Discord channel whenever a player joins or leaves the game.
-
----
-
 ### 1. Create a webhook
 
-Crate a webhook in your Discord channel and copy the webhook URL.
-![Tutorial Step 1](assets/tut1.png)
+Create a webhook in your Discord channel and copy the webhook URL.
+<br>
+![Tutorial Step 1](assets/webhook.png)
+<br>
 
 ### 2. Enable HTTP requests in your Roblox game
 
 Go to `File` > `Experience Settings` > `Security` and enable `Allow HTTP Requests`.
-![Tutorial Step 2](assets/tut2.png)
-
-### 3. Configure the logging script
-
-Replace the `YOUR_DISCORD_WEBHOOK_URL` variable in `Logging.luau` with your actual Discord webhook URL.
 <br>
-![Tutorial Step 3](assets/tut3.png)
+![Tutorial Step 2](assets/http.png)
+<br>
+
+### 3. Configure the webhook URL
+
+Replace the `YOUR_WEBHOOK_URL` value in the [ServerStorage/dcWebhookURL](src/game/ServerStorage/dcWebhookUrl.model.json) StringValue object with your actual Discord webhook URL.
+<br>
+![Tutorial Step 3](assets/url.png)
 <br>
 
 - Your Webhook URL is server-sided, player non-owners cant see it, so dont worry
 
 ### 4. Test the script
 
-Play your game in Roblox Studio and check your Discord channel for log messages whenever a player joins or leaves the game.
+Play your game in Roblox Studio and check your Discord channel
 <br>
-![Tutorial Step 4](assets/tut4.png)
+![Tutorial Step 4](assets/example.png)
 <br>
 
 - In Roblox Studio Test, Server Region is selecting by your devices' IP, Job ID will not appears
@@ -107,19 +142,9 @@ Play your game in Roblox Studio and check your Discord channel for log messages 
 
 ---
 
-## Develop Ideas
-
-- Add more events to log (e.g., player deaths, chat messages, etc.)
-- Implement a more robust retry mechanism for failed requests
-- Add support for custom embed colors and formatting
-- Another variants for other webhook platforms
-- Add a configuration module for easier customization without modifying the main script (im lazy)
-
----
-
 ## License
 
-Unlicensed. Do whatever you want with this code, but i not responsible for any damage or issues caused by using this code. Use at your own risk.
+[MIT](LICENSE)
 
 ---
 
